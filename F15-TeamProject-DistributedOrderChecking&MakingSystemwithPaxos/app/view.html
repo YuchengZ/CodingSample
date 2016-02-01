@@ -1,0 +1,147 @@
+<!-- Sorting Lab Demo with Bootstrap and jQuery and HTML Canvas -->
+<!-- June 3 2015 -->
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Not sure what this does -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<!-- jQuery -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+
+
+	<!-- Basic Bootstrap Theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+	<!-- Bootstrap Import -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+	<!-- Our Style Code -->
+	<style>
+
+	</style>
+</head>
+<body>
+	<div><a href="localhost:8080/" class="text-center new-account">log out</a></div>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="panel panel-info">
+					<div class="panel-heading"><h1>User Profile</h1></div>
+					<h1 id="user" class="panel-body"></h1>
+					<div id="userId" class="panel-body"></div>
+				</div>
+				<div class="panel panel-info">
+					<div class="panel-heading"><h1>Projucts Left</h1></div>
+					<div id="user" class="panel-body">					
+					<ul class="list-group">
+  					<li class="list-group-item">Shoes</li>
+  					<li class="list-group-item">Gloves</li>
+  					<li class="list-group-item">Shorts</li>
+  					<li class="list-group-item">Skirts</li>
+  					<li class="list-group-item">T-shirts</li>
+					</ul>
+					</div>
+				</div>		
+			</div>
+			<div class="col-md-9">
+				<div class="panel panel-info">
+					<div class="panel-heading"><h1>Actions</h1></div>
+					<div class="panel-body">
+					<!-- action list with popup action -->
+					<div class="list-group">
+					  <button style="width: 100%" type="button" class="list-group-item" data-toggle="modal" data-target="#myModal">Make an Order</button>
+					</div><!-- Finish! action list with popup action -->
+
+					<!-- Modal -->
+					<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+					  <div class="modal-dialog" role="document">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					        <h4 class="modal-title" id="myModalLabel">Filing the information</h4>
+					      </div>
+					      <form action="/makeOrder/{{.Title}}" method="POST">
+					      <div class="modal-body">
+									<div class="input-group">
+									  <input name="pName" type="text" class="form-control" placeholder="Projuct Name" aria-describedby="basic-addon1">
+									  <input name="quantity" type="text" class="form-control" placeholder="Quantity" aria-label="Amount (to the nearest dollar)">
+									</div>
+					      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					        <button type="submit" class="btn btn-primary">Submit</button>
+					      </div>
+					      </form>
+					    </div>
+					  </div>
+					</div><!-- Modal end -->
+
+
+					</div>
+				</div>
+				<div class="panel panel-info">
+					<div id="order" class="panel-heading"><h1>All your orders</h1></div>
+					<div class="panel-body" id="news">
+					</div>
+				</div>
+			</div>
+		</div>
+			<!-- js file -->
+		<script>
+function main() {
+
+	console.log("in main");
+	console.log({{.Title}})
+
+	// parse the response
+	var response = {{.Title}};
+	var itemList = response.split("&");
+	console.log(itemList)
+	var uid = itemList[0].split(":")[1]
+	var uName = itemList[1].split(":")[1]
+	var orderList = itemList[2].split(":")
+
+	// update the name and id
+	document.getElementById("user").innerHTML = uName
+
+	var idSpan = document.createElement('span');
+	idSpan.id = "id"
+	idSpan.className = "label label-warning"
+	idSpan.innerHTML = "User id: " + uid
+	document.getElementById('userId').appendChild(idSpan)
+
+	// parse the posts
+	for (i=1; i<orderList.length; i +=1) {
+		var orderValue = orderList[i].split("#")
+		console.log(orderValue)
+		console.log(orderValue.length)
+		if (orderValue.length == 1) {
+			continue
+		}
+
+		// create element to add order id
+		var oidSpan = document.createElement('span');
+		oidSpan.id = "oid" + i
+		oidSpan.className = "label label-primary"
+		oidSpan.innerHTML = "Order id: " + orderValue[0]
+		document.getElementById('news').appendChild(oidSpan)
+		
+		// create element to add order contect 	
+		var postDiv = document.createElement('div');
+		postDiv.id = "order" + i;
+		postDiv.innerHTML ="Product name: " + orderValue[1] + 
+		                    "	Quantity: " + orderValue[2];
+		postDiv.className = "well well-sm";
+		document.getElementById('news').appendChild(postDiv)
+	}
+
+}
+main()
+
+
+	  </script>
+</body>
+</html>

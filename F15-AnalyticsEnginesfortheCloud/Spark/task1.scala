@@ -1,0 +1,6 @@
+val inputFile = sc.textFile("s3://f15-p42/twitter-graph.txt")
+//val inputFile = sc.textFile("s3://zhangyuchengproject42/input/twitter_test.txt")
+val counts = inputFile.map(line => (line, 1)).distinct().count()
+val counts2 = inputFile.flatMap(line => line.split(" ")).map(word => (word, 1)).distinct().count()
+println(counts)
+println(counts2)
